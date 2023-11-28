@@ -2,7 +2,7 @@
 #include <Library/UefiLib.h>
 
 INT32 TestString(CHAR16 *returnValue) {
-  StrCpyS(returnValue, 50, L"This is a test string!");
+  StrCpyS(returnValue, MAX_NAME_LEN, L"This is a test string!");
   return 0;
 }
 

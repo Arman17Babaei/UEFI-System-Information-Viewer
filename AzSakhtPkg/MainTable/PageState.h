@@ -6,6 +6,9 @@
 #include "Types.h"
 #include <Uefi.h>
 
+extern UINTN WIDTH;
+extern UINTN HEIGHT;
+
 extern Page *currentPage;
 
 extern CHAR16 filterTerm[MAX_NAME_LEN];
