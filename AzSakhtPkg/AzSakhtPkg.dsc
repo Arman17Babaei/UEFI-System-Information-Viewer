@@ -31,5 +31,3 @@
 
 [Components]
   AzSakhtPkg/MainTable/MainTable.inf
-
-
