@@ -1,11 +1,14 @@
-#ifndef MAIN_PAGE_H_
-#define MAIN_PAGE_H_
+#ifndef PAGES_H_
+#define PAGES_H_
 
 #pragma pack(1) // Ensures byte alignment
 
 #include "Types.h"
+#include "Utils.h"
 #include <Uefi.h>
 
 extern Page mainPage;
+extern Page processorPage;
 
-#endif // MAIN_PAGE_H_
+
+#endif // PAGES_H_

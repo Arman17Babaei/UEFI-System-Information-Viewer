@@ -15,7 +15,10 @@
 [Sources]
   MainTable.c
   PageState.c
-  MainPage.c
+  Utils.c
+  Pages/MainPage.c
+  Pages/ProcessorPage.c
+
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -24,3 +27,5 @@
   UefiApplicationEntryPoint
   UefiLib
 
+[Protocols]
+  gEfiMpServiceProtocolGuid

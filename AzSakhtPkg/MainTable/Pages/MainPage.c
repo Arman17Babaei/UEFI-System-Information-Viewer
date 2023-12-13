@@ -1,4 +1,4 @@
-#include "MainPage.h"
+#include "../Pages.h"
 #include <Library/UefiLib.h>
 
 INT32 TestString(CHAR16 *returnValue) {
@@ -6,11 +6,16 @@ INT32 TestString(CHAR16 *returnValue) {
   return 0;
 }
 
-PageItem page1 = {
-    .name = L"test value 1",
-    .GetValue = TestString,
-    .GetMoreInformation = TestString,
-    .page = &mainPage,
+INT32 ProcessorsCountDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_NAME_LEN, L"Number of Processors");
+  return 0;
+}
+
+PageItem processrsCount = {
+    .name = L"Processors Count",
+    .GetValue = NoneString,
+    .GetMoreInformation = ProcessorsCountDescription,
+    .page = &processorPage,
 };
 
 PageItem page2 = {
@@ -25,7 +30,7 @@ Page mainPage = {
     .itemCount = 2,
     .pageItems =
         {
-            &page1,
+            &processrsCount,
             &page2,
         },
 };

@@ -6,7 +6,7 @@
 #include <Uefi.h>
 
 #define MAX_ITEMS_PER_PAGE 20
-#define MAX_NAME_LEN 25
+#define MAX_NAME_LEN 40
 
 struct PageItem;
 

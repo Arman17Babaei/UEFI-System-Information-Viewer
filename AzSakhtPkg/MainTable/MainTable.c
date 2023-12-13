@@ -2,12 +2,12 @@
 #include <Library/UefiLib.h>
 #include <Uefi.h>
 
-#include "MainPage.h"
+#include "Pages.h"
 #include "PageState.h"
 
-UINTN WIDTH = 80;
-UINTN HEIGHT = 24;
-Page *currentPage = &mainPage;
+UINTN WIDTH = 300;
+UINTN HEIGHT = 200;
+Page *currentPage = &processorPage;
 
 EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle,
                            EFI_SYSTEM_TABLE *SystemTable) {
