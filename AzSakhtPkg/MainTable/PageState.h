@@ -6,14 +6,17 @@
 #include "Types.h"
 #include <Uefi.h>
 
-extern UINTN WIDTH;
-extern UINTN HEIGHT;
+#define WIDTH 150
+#define HEIGHT 30
 
 extern Page *currentPage;
 
 extern CHAR16 filterTerm[MAX_NAME_LEN];
 extern CHAR16 searchTerm[MAX_NAME_LEN];
 
+extern Position position;
+
 VOID UpdateScreen();
+VOID HandleKeyStroke(EFI_INPUT_KEY key);
 
 #endif // PAEGS_STATE_H_

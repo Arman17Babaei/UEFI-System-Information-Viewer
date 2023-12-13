@@ -23,4 +23,10 @@ typedef struct PageItem {
   Page *page;
 } PageItem;
 
+typedef struct {
+  UINTN onHeader;    // Which of the two numbers below are valid
+  UINTN headerIndex; // Main window, Search, Filter
+  UINTN rowNumber;
+} Position;
+
 #endif // TYPES_H_
