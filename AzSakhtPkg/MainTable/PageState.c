@@ -9,6 +9,8 @@
 #define MAX_ACTION_LEN 5
 #define MAX_DESCRIPTION_LEN 500
 
+CHAR16 filterTerm[MAX_NAME_LEN];
+
 CHAR16 pageC[HEIGHT][WIDTH];
 CHAR16 preActions[HEIGHT][WIDTH][MAX_ACTION_LEN];
 CHAR16 postActions[HEIGHT][WIDTH][MAX_ACTION_LEN];
@@ -90,6 +92,16 @@ VOID DrawPage(Page *page) {
     pageC[1][WIDTH / 2 - len / 2 + len] = L'┤';
   }
 
+  CHAR16 f[] = L"Filter: ";
+  len = StrLen(f);
+  for (int i = 0; i < len; i++) {
+    pageC[3][MAX_NAME_LEN * 2 + 1 + i] = f[i];
+  }
+  len = StrLen(filterTerm);
+  for (int i = 0; i < len; i++) {
+    pageC[3][MAX_NAME_LEN * 2 + 8 + i] = filterTerm[i];
+  }
+
   CHAR16 n[] = L"Name";
   len = StrLen(n);
   for (int i = 0; i < len; i++) {
@@ -128,8 +140,29 @@ VOID DrawPage(Page *page) {
 
   // Items
   CHAR16 value[MAX_NAME_LEN];
+  int p = 0;
   for (int i = 0; i < page->itemCount; i++) {
-    int row = 5 + i;
+    if (StrLen(filterTerm) > 0) {
+      if (StrLen(filterTerm) > StrLen(page->pageItems[i]->name)) {
+        continue;
+      }
+      int match = 0;
+      for (int k = 0;
+           k < StrLen(page->pageItems[i]->name) - StrLen(filterTerm) + 1; k++) {
+        int equal = 1;
+        for (int j = 0; j < StrLen(filterTerm); j++) {
+          if (filterTerm[j] != page->pageItems[i]->name[k + j]) {
+            equal = 0;
+          }
+        }
+        if (equal)
+          match = 1;
+      }
+      if (!match) {
+        continue;
+      }
+    }
+    int row = 5 + p;
     if (!position.onHeader && position.rowNumber == i) {
       pageC[row][0] = L'├';
       pageC[row][1] = L'*';
@@ -147,6 +180,7 @@ VOID DrawPage(Page *page) {
     for (int j = 0; j < len; j++) {
       pageC[row][MAX_NAME_LEN + MAX_NAME_LEN / 2 - len / 2 + j] = value[j];
     }
+    p ++;
   }
 }
 
@@ -157,6 +191,28 @@ VOID UpdateScreen() {
 }
 
 VOID HandleKeyStroke(EFI_INPUT_KEY key) {
+  if (position.onHeader && position.headerIndex == 1) {
+    if (key.UnicodeChar == CHAR_CARRIAGE_RETURN) {
+      position.onHeader = 0;
+      position.rowNumber = 0;
+      return;
+    }
+    if (key.UnicodeChar != 0) {
+      if (StrLen(filterTerm) >= MAX_NAME_LEN - 1) {
+        return;
+      }
+      filterTerm[StrLen(filterTerm) + 1] = L'\0';
+      filterTerm[StrLen(filterTerm)] = key.UnicodeChar;
+    }
+    else {
+      if (key.ScanCode == CHAR_BACKSPACE) {
+        if (StrLen(filterTerm) == 0) {
+          return;
+        }
+        filterTerm[StrLen(filterTerm) - 1] = L'\0';
+      }
+    }
+  }
   if (key.ScanCode == SCAN_UP) {
     if (position.onHeader) {
       position.onHeader = 0;
@@ -180,6 +236,10 @@ VOID HandleKeyStroke(EFI_INPUT_KEY key) {
         position.headerIndex = 0;
       }
     }
+  }
+  if (key.ScanCode == SCAN_RIGHT) {
+    position.onHeader = 1;
+    position.headerIndex = 1;
   }
   if (key.UnicodeChar == CHAR_CARRIAGE_RETURN) {
     if (!position.onHeader) {
