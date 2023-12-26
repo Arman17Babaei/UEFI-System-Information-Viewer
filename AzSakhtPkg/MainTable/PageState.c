@@ -6,16 +6,43 @@
 #include <Library/UefiLib.h>
 #include <Uefi.h>
 
-#define MAX_ACTION_LEN 5
-#define MAX_DESCRIPTION_LEN 500
-
 CHAR16 filterTerm[MAX_NAME_LEN];
+CHAR16 searchTerm[MAX_NAME_LEN];
 
 CHAR16 pageC[HEIGHT][WIDTH];
 CHAR16 preActions[HEIGHT][WIDTH][MAX_ACTION_LEN];
 CHAR16 postActions[HEIGHT][WIDTH][MAX_ACTION_LEN];
 
 CHAR16 pageStr[HEIGHT * (WIDTH) * (1 + MAX_ACTION_LEN * 2)];
+
+UINTN rowIndex[HEIGHT];
+UINTN pageRows;
+
+VOID StartSearchFont(CHAR16 *string) {
+  // set bold font and highlight background in preactions
+  string[0] = L'\x1b';
+  string[1] = L'[';
+  string[2] = L'1';
+  string[3] = L'm';
+  string[4] = L'\x1b';
+  string[5] = L'[';
+  string[6] = L'4';
+  string[7] = L'0';
+  string[8] = L'm';
+}
+
+VOID ResetFont(CHAR16 *string) {
+  // reset font and background in postactions
+  string[0] = L'\x1b';
+  string[1] = L'[';
+  string[2] = L'0';
+  string[3] = L'm';
+  string[4] = L'\x1b';
+  string[5] = L'[';
+  string[6] = L'4';
+  string[7] = L'9';
+  string[8] = L'm';
+}
 
 VOID ClearScreen() {
   for (UINTN i = 0; i < HEIGHT; i++) {
@@ -37,12 +64,16 @@ VOID PrintPage() {
       for (UINTN k = 0; k < MAX_ACTION_LEN; k++) {
         if (preActions[i][j][k] != L'\0') {
           pageStr[pos++] = preActions[i][j][k];
+        } else {
+          break;
         }
       }
       pageStr[pos++] = pageC[i][j];
       for (UINTN k = 0; k < MAX_ACTION_LEN; k++) {
         if (postActions[i][j][k] != L'\0') {
           pageStr[pos++] = postActions[i][j][k];
+        } else {
+          break;
         }
       }
     }
@@ -54,6 +85,8 @@ VOID PrintPage() {
 }
 
 VOID DrawPage(Page *page) {
+  ResetFont(preActions[0][0]);
+
   // Frame
   for (UINTN i = 0; i < HEIGHT; i++) {
     pageC[i][0] = L'│';
@@ -95,11 +128,27 @@ VOID DrawPage(Page *page) {
   CHAR16 f[] = L"Filter: ";
   len = StrLen(f);
   for (int i = 0; i < len; i++) {
-    pageC[3][MAX_NAME_LEN * 2 + 1 + i] = f[i];
+    pageC[3][MAX_NAME_LEN * 2 + 2 + i] = f[i];
   }
   len = StrLen(filterTerm);
   for (int i = 0; i < len; i++) {
-    pageC[3][MAX_NAME_LEN * 2 + 8 + i] = filterTerm[i];
+    pageC[3][MAX_NAME_LEN * 2 + 9 + i] = filterTerm[i];
+  }
+  if (position.onHeader && position.headerIndex == 1) {
+    pageC[3][MAX_NAME_LEN * 2 + 1] = L'*';
+  }
+
+  CHAR16 s[] = L"Search: ";
+  len = StrLen(s);
+  for (int i = 0; i < len; i++) {
+    pageC[3][MAX_NAME_LEN * 3 + 2 + i] = s[i];
+  }
+  len = StrLen(searchTerm);
+  for (int i = 0; i < len; i++) {
+    pageC[3][MAX_NAME_LEN * 3 + 9 + i] = searchTerm[i];
+  }
+  if (position.onHeader && position.headerIndex == 2) {
+    pageC[3][MAX_NAME_LEN * 3 + 1] = L'*';
   }
 
   CHAR16 n[] = L"Name";
@@ -120,7 +169,8 @@ VOID DrawPage(Page *page) {
             L"Look around using up and down arrow keys. Press enter to select "
             L"an item. Press escape to go back.");
   } else {
-    page->pageItems[position.rowNumber]->GetMoreInformation(description);
+    page->pageItems[rowIndex[position.rowNumber]]->GetMoreInformation(
+        description);
   }
   len = StrLen(description);
   int curX = MAX_NAME_LEN * 2 + 2;
@@ -138,31 +188,19 @@ VOID DrawPage(Page *page) {
     pageC[curY][curX++] = description[i];
   }
 
+  // Filter Items
+  pageRows = 0;
+  for (int i = 0; i < page->itemCount; i++) {
+    if (StrLen(filterTerm) == 0 ||
+        MatchIndex(page->pageItems[i]->name, filterTerm) != -1) {
+      rowIndex[pageRows++] = i;
+    }
+  }
+
   // Items
   CHAR16 value[MAX_NAME_LEN];
-  int p = 0;
-  for (int i = 0; i < page->itemCount; i++) {
-    if (StrLen(filterTerm) > 0) {
-      if (StrLen(filterTerm) > StrLen(page->pageItems[i]->name)) {
-        continue;
-      }
-      int match = 0;
-      for (int k = 0;
-           k < StrLen(page->pageItems[i]->name) - StrLen(filterTerm) + 1; k++) {
-        int equal = 1;
-        for (int j = 0; j < StrLen(filterTerm); j++) {
-          if (filterTerm[j] != page->pageItems[i]->name[k + j]) {
-            equal = 0;
-          }
-        }
-        if (equal)
-          match = 1;
-      }
-      if (!match) {
-        continue;
-      }
-    }
-    int row = 5 + p;
+  for (int i = 0; i < pageRows; i++) {
+    int row = 5 + i;
     if (!position.onHeader && position.rowNumber == i) {
       pageC[row][0] = L'├';
       pageC[row][1] = L'*';
@@ -170,7 +208,7 @@ VOID DrawPage(Page *page) {
       pageC[row][MAX_NAME_LEN] = L'┤';
     }
 
-    PageItem *item = page->pageItems[i];
+    PageItem *item = page->pageItems[rowIndex[i]];
     len = StrLen(item->name);
     for (int j = 0; j < len; j++) {
       pageC[row][MAX_NAME_LEN / 2 - len / 2 + j] = item->name[j];
@@ -180,7 +218,18 @@ VOID DrawPage(Page *page) {
     for (int j = 0; j < len; j++) {
       pageC[row][MAX_NAME_LEN + MAX_NAME_LEN / 2 - len / 2 + j] = value[j];
     }
-    p ++;
+
+    // Highlight search
+    if (StrLen(searchTerm) != 0) {
+      INT32 match = MatchIndex(item->name, searchTerm);
+      if (match != -1) {
+        len = StrLen(item->name);
+        INT32 matchColumn = MAX_NAME_LEN / 2 - len / 2 + match;
+
+        StartSearchFont(preActions[row][matchColumn]);
+        ResetFont(postActions[row][matchColumn + StrLen(searchTerm) - 1]);
+      }
+    }
   }
 }
 
@@ -191,32 +240,22 @@ VOID UpdateScreen() {
 }
 
 VOID HandleKeyStroke(EFI_INPUT_KEY key) {
-  if (position.onHeader && position.headerIndex == 1) {
+  if (position.onHeader && position.headerIndex > 0) {
     if (key.UnicodeChar == CHAR_CARRIAGE_RETURN) {
       position.onHeader = 0;
       position.rowNumber = 0;
       return;
     }
-    if (key.UnicodeChar != 0) {
-      if (StrLen(filterTerm) >= MAX_NAME_LEN - 1) {
-        return;
-      }
-      filterTerm[StrLen(filterTerm) + 1] = L'\0';
-      filterTerm[StrLen(filterTerm)] = key.UnicodeChar;
-    }
-    else {
-      if (key.ScanCode == CHAR_BACKSPACE) {
-        if (StrLen(filterTerm) == 0) {
-          return;
-        }
-        filterTerm[StrLen(filterTerm) - 1] = L'\0';
-      }
+    if (position.headerIndex == 1) {
+      UpdateTerm(key, filterTerm);
+    } else if (position.headerIndex == 2) {
+      UpdateTerm(key, searchTerm);
     }
   }
   if (key.ScanCode == SCAN_UP) {
     if (position.onHeader) {
       position.onHeader = 0;
-      position.rowNumber = currentPage->itemCount - 1;
+      position.rowNumber = pageRows - 1;
     } else {
       if (position.rowNumber == 0) {
         position.onHeader = 1;
@@ -231,22 +270,42 @@ VOID HandleKeyStroke(EFI_INPUT_KEY key) {
       position.rowNumber = 0;
     } else {
       position.rowNumber++;
-      if (position.rowNumber >= currentPage->itemCount) {
+      if (position.rowNumber >= pageRows) {
         position.onHeader = 1;
         position.headerIndex = 0;
       }
     }
   }
   if (key.ScanCode == SCAN_RIGHT) {
-    position.onHeader = 1;
-    position.headerIndex = 1;
+    if (!position.onHeader) {
+      position.onHeader = 1;
+      position.headerIndex = 1;
+    } else {
+      position.headerIndex++;
+      if (position.headerIndex > 2) {
+        position.headerIndex = 0;
+      }
+    }
+  }
+  if (key.ScanCode == SCAN_LEFT) {
+    if (!position.onHeader) {
+      position.onHeader = 1;
+      position.headerIndex = 0;
+    } else {
+      if (position.headerIndex == 0) {
+        position.headerIndex = 2;
+      } else {
+        position.headerIndex--;
+      }
+    }
   }
   if (key.UnicodeChar == CHAR_CARRIAGE_RETURN) {
     if (!position.onHeader) {
       position.onHeader = 1;
       position.headerIndex = 0;
-      if (currentPage->pageItems[position.rowNumber]->page != NULL) {
-        currentPage = currentPage->pageItems[position.rowNumber]->page;
+      PageItem *pageItem = currentPage->pageItems[rowIndex[position.rowNumber]];
+      if (pageItem->page != NULL) {
+        currentPage = pageItem->page;
       }
     }
   }

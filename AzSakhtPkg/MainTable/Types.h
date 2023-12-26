@@ -3,10 +3,8 @@
 
 #pragma pack(1) // Ensures byte alignment
 
+#include "Settings.h"
 #include <Uefi.h>
-
-#define MAX_ITEMS_PER_PAGE 20
-#define MAX_NAME_LEN 40
 
 struct PageItem;
 
