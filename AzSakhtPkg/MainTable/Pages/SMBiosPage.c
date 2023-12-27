@@ -54,8 +54,6 @@ INT32 GetBiosVersion(CHAR16 *res) {
             case EFI_SMBIOS_TYPE_BIOS_INFORMATION: {
                 SMBIOS_TABLE_TYPE0* Type0Record = (SMBIOS_TABLE_TYPE0*) Record;
                 Int2Str(Type0Record->BiosVersion, res);
-                //strcpy(res, GetRecordString(Record, Type0Record->BiosVersion));
-                // res = Type0Record->BiosVersion
                 Print(L"\tBiosVersion=%a\n", GetRecordString(Record, Type0Record->BiosVersion));
                 Print(L"\tBiosReleaseDate=%a\n", GetRecordString(Record, Type0Record->BiosReleaseDate));
                 break;
@@ -83,6 +81,7 @@ INT32 GetManufacturer(CHAR16 *res) {
                 SMBIOS_TABLE_TYPE1* Type1Record = (SMBIOS_TABLE_TYPE1*) Record;
                 Int2Str(Type1Record->Manufacturer, res);
                 // res = GetRecordString(Record, Type1Record->Manufacturer);
+                Print(L"\tManufacturer=%a\n", GetRecordString(Record, Type1Record->Manufacturer));
                 break;
             }
         }
@@ -96,6 +95,33 @@ INT32 GetManufacturerDescription(CHAR16 *res) {
   return 0;
 }
 
+INT32 GetProductName(CHAR16 *res) {
+    CHECK_UPDATE
+    EFI_STATUS Status;
+    EFI_SMBIOS_HANDLE SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
+    EFI_SMBIOS_TABLE_HEADER* Record;
+    Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    while (!EFI_ERROR(Status)) {
+        switch (Record->Type) {
+            case EFI_SMBIOS_TYPE_SYSTEM_INFORMATION: {
+                SMBIOS_TABLE_TYPE1* Type1Record = (SMBIOS_TABLE_TYPE1*) Record;
+                Int2Str(Type1Record->ProductName, res);
+                // res = GetRecordString(Record, Type1Record->ProductName);
+                 Print(L"\tProductName=%a\n", GetRecordString(Record, Type1Record->ProductName));
+                break;
+            }
+        }
+        Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    }
+    return 0;
+}
+
+INT32 GetProductNameDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_NAME_LEN, L"Product Name");
+  return 0;
+}
+
+
 PageItem biosVersion = {
     .name = L"BIOS Version",
     .GetValue = GetBiosVersion,
@@ -103,8 +129,22 @@ PageItem biosVersion = {
     .page = NULL,
 };
 
-PageItem Manufacturer = {
+PageItem manufacturer = {
     .name = L"Manufacturer",
+    .GetValue = GetManufacturer,
+    .GetMoreInformation = GetManufacturerDescription,
+    .page = NULL,
+};
+
+PageItem productName = {
+    .name = L"Product Name",
+    .GetValue = GetProductName,
+    .GetMoreInformation = GetProductNameDescription,
+    .page = NULL,
+};
+
+PageItem serialNumber = {
+    .name = L"Serial Number",
     .GetValue = GetManufacturer,
     .GetMoreInformation = GetManufacturerDescription,
     .page = NULL,
@@ -112,10 +152,12 @@ PageItem Manufacturer = {
 
 Page smbiosPage = {
     .name = L"System Management BIOS Page",
-    .itemCount = 2,
+    .itemCount = 3,
     .pageItems =
         {
             &biosVersion,
-            &Manufacturer
+            &manufacturer,
+            &productName,
+            //&serialNumber,
         },
 };
