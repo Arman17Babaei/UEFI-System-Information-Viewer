@@ -9,7 +9,7 @@
 #define MAX_DESCRIPTION_LEN 500
 
 #define MAX_ITEMS_PER_PAGE 20
-#define MAX_NAME_LEN 40
+#define MAX_NAME_LEN 60
 
 #define WIDTH 150
 #define HEIGHT 30

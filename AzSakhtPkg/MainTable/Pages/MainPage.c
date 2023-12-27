@@ -11,6 +11,18 @@ INT32 ProcessorsCountDescription(CHAR16 *res) {
   return 0;
 }
 
+INT32 SmbiosTableDataDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_NAME_LEN, L"SMBIOS Table Data");
+  return 0;
+}
+
+PageItem smbiosTable = {
+    .name = L"SMBIOS Table Data",
+    .GetValue = NoneString,
+    .GetMoreInformation = SmbiosTableDataDescription,
+    .page = &smbiosPage,
+};
+
 PageItem processrsCount = {
     .name = L"Processors Count",
     .GetValue = NoneString,
@@ -27,10 +39,11 @@ PageItem page2 = {
 
 Page mainPage = {
     .name = L"Main Page",
-    .itemCount = 2,
+    .itemCount = 3,
     .pageItems =
         {
             &processrsCount,
+            &smbiosTable,
             &page2,
         },
 };

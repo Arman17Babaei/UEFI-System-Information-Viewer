@@ -18,6 +18,7 @@
   Utils.c
   Pages/MainPage.c
   Pages/ProcessorPage.c
+  Pages/SMBiosPage.c
 
 
 [Packages]
@@ -26,6 +27,8 @@
 [LibraryClasses]
   UefiApplicationEntryPoint
   UefiLib
+  UefiBootServicesTableLib
 
 [Protocols]
   gEfiMpServiceProtocolGuid
+  gEfiSmbiosProtocolGuid
