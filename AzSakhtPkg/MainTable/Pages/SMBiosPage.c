@@ -53,9 +53,7 @@ INT32 GetBiosVersion(CHAR16 *res) {
         switch (Record->Type) {
             case EFI_SMBIOS_TYPE_BIOS_INFORMATION: {
                 SMBIOS_TABLE_TYPE0* Type0Record = (SMBIOS_TABLE_TYPE0*) Record;
-                Int2Str(Type0Record->BiosVersion, res);
-                Print(L"\tBiosVersion=%a\n", GetRecordString(Record, Type0Record->BiosVersion));
-                Print(L"\tBiosReleaseDate=%a\n", GetRecordString(Record, Type0Record->BiosReleaseDate));
+                AsciiStrToUnicodeStrS(GetRecordString(Record, Type0Record->BiosVersion), res, MAX_NAME_LEN);
                 break;
             }
         }
@@ -65,7 +63,31 @@ INT32 GetBiosVersion(CHAR16 *res) {
 }
 
 INT32 GetBiosVersionDescription(CHAR16 *res) {
-  StrCpyS(res, MAX_NAME_LEN, L"Version number or identifier of the system's BIOS.");
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Version number or identifier of the system's BIOS.");
+  return 0;
+}
+
+INT32 GetBiosReleaseDate(CHAR16 *res) {
+    CHECK_UPDATE
+    EFI_STATUS Status;
+    EFI_SMBIOS_HANDLE SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
+    EFI_SMBIOS_TABLE_HEADER* Record;
+    Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    while (!EFI_ERROR(Status)) {
+        switch (Record->Type) {
+            case EFI_SMBIOS_TYPE_BIOS_INFORMATION: {
+                SMBIOS_TABLE_TYPE0* Type0Record = (SMBIOS_TABLE_TYPE0*) Record;
+                AsciiStrToUnicodeStrS(GetRecordString(Record, Type0Record->BiosReleaseDate), res, MAX_NAME_LEN);
+                break;
+            }
+        }
+        Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    }
+    return 0;
+}
+
+INT32 GetBiosReleaseDateDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Release date of the system's BIOS.");
   return 0;
 }
 
@@ -75,13 +97,12 @@ INT32 GetManufacturer(CHAR16 *res) {
     EFI_SMBIOS_HANDLE SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
     EFI_SMBIOS_TABLE_HEADER* Record;
     Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    res[0] = 0;
     while (!EFI_ERROR(Status)) {
         switch (Record->Type) {
             case EFI_SMBIOS_TYPE_SYSTEM_INFORMATION: {
                 SMBIOS_TABLE_TYPE1* Type1Record = (SMBIOS_TABLE_TYPE1*) Record;
-                Int2Str(Type1Record->Manufacturer, res);
-                // res = GetRecordString(Record, Type1Record->Manufacturer);
-                Print(L"\tManufacturer=%a\n", GetRecordString(Record, Type1Record->Manufacturer));
+                AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->Manufacturer), res, MAX_NAME_LEN);
                 break;
             }
         }
@@ -91,7 +112,7 @@ INT32 GetManufacturer(CHAR16 *res) {
 }
 
 INT32 GetManufacturerDescription(CHAR16 *res) {
-  StrCpyS(res, MAX_NAME_LEN, L"Manufacturer of the system");
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Manufacturer of the system");
   return 0;
 }
 
@@ -105,9 +126,7 @@ INT32 GetProductName(CHAR16 *res) {
         switch (Record->Type) {
             case EFI_SMBIOS_TYPE_SYSTEM_INFORMATION: {
                 SMBIOS_TABLE_TYPE1* Type1Record = (SMBIOS_TABLE_TYPE1*) Record;
-                Int2Str(Type1Record->ProductName, res);
-                // res = GetRecordString(Record, Type1Record->ProductName);
-                 Print(L"\tProductName=%a\n", GetRecordString(Record, Type1Record->ProductName));
+                AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->ProductName), res, MAX_NAME_LEN);
                 break;
             }
         }
@@ -117,7 +136,7 @@ INT32 GetProductName(CHAR16 *res) {
 }
 
 INT32 GetProductNameDescription(CHAR16 *res) {
-  StrCpyS(res, MAX_NAME_LEN, L"Product Name");
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Product Name");
   return 0;
 }
 
@@ -126,6 +145,13 @@ PageItem biosVersion = {
     .name = L"BIOS Version",
     .GetValue = GetBiosVersion,
     .GetMoreInformation = GetBiosVersionDescription,
+    .page = NULL,
+};
+
+PageItem biosReleaseDate = {
+    .name = L"BIOS Release Date",
+    .GetValue = GetBiosReleaseDate,
+    .GetMoreInformation = GetBiosReleaseDateDescription,
     .page = NULL,
 };
 
@@ -152,10 +178,11 @@ PageItem serialNumber = {
 
 Page smbiosPage = {
     .name = L"System Management BIOS Page",
-    .itemCount = 3,
+    .itemCount = 4,
     .pageItems =
         {
             &biosVersion,
+            &biosReleaseDate,
             &manufacturer,
             &productName,
             //&serialNumber,
