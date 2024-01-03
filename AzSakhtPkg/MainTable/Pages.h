@@ -10,5 +10,6 @@
 extern Page mainPage;
 extern Page processorPage;
 extern Page smbiosPage;
+extern Page acpiPage;
 
 #endif // PAGES_H_

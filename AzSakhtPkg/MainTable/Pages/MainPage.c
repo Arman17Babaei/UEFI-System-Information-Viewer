@@ -16,6 +16,11 @@ INT32 SmbiosTableDataDescription(CHAR16 *res) {
   return 0;
 }
 
+INT32 AcpiTableDataDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_NAME_LEN, L"ACPI Table Data");
+  return 0;
+}
+
 PageItem smbiosTable = {
     .name = L"SMBIOS Table Data",
     .GetValue = NoneString,
@@ -30,6 +35,13 @@ PageItem processrsCount = {
     .page = &processorPage,
 };
 
+PageItem acpiTable = {
+    .name = L"ACPI Table",
+    .GetValue = NoneString,
+    .GetMoreInformation = AcpiTableDataDescription,
+    .page = &acpiPage,
+};
+
 PageItem page2 = {
     .name = L"test value 2",
     .GetValue = TestString,
@@ -39,11 +51,12 @@ PageItem page2 = {
 
 Page mainPage = {
     .name = L"Main Page",
-    .itemCount = 3,
+    .itemCount = 4,
     .pageItems =
         {
             &processrsCount,
             &smbiosTable,
+            &acpiTable,
             &page2,
         },
 };

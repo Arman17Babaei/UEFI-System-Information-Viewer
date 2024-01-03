@@ -140,6 +140,78 @@ INT32 GetProductNameDescription(CHAR16 *res) {
   return 0;
 }
 
+INT32 GetProcessorVersion(CHAR16 *res) {
+    CHECK_UPDATE
+    EFI_STATUS Status;
+    EFI_SMBIOS_HANDLE SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
+    EFI_SMBIOS_TABLE_HEADER* Record;
+    Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    while (!EFI_ERROR(Status)) {
+        switch (Record->Type) {
+            case EFI_SMBIOS_TYPE_PROCESSOR_INFORMATION: {
+                SMBIOS_TABLE_TYPE4* Type4Record = (SMBIOS_TABLE_TYPE4*) Record;
+                AsciiStrToUnicodeStrS(GetRecordString(Record, Type4Record->ProcessorVersion), res, MAX_NAME_LEN);    
+                break;
+            }
+        }
+        Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    }
+    return 0;
+}
+
+INT32 GetProcessorVersionDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Version of Processor");
+  return 0;
+}
+
+INT32 GetProcessorManufacturer(CHAR16 *res) {
+    CHECK_UPDATE
+    EFI_STATUS Status;
+    EFI_SMBIOS_HANDLE SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
+    EFI_SMBIOS_TABLE_HEADER* Record;
+    Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    while (!EFI_ERROR(Status)) {
+        switch (Record->Type) {
+            case EFI_SMBIOS_TYPE_PROCESSOR_INFORMATION: {
+                SMBIOS_TABLE_TYPE4* Type4Record = (SMBIOS_TABLE_TYPE4*) Record;
+                AsciiStrToUnicodeStrS(GetRecordString(Record, Type4Record->ProcessorManufacturer), res, MAX_NAME_LEN);      
+                break;
+            }
+        }
+        Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    }
+    return 0;
+}
+
+INT32 GetProcessorManufacturerDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Manufacturer of Processor");
+  return 0;
+}
+
+INT32 GetProcessorMaxSpeed(CHAR16 *res) {
+    CHECK_UPDATE
+    EFI_STATUS Status;
+    EFI_SMBIOS_HANDLE SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;
+    EFI_SMBIOS_TABLE_HEADER* Record;
+    Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    while (!EFI_ERROR(Status)) {
+        switch (Record->Type) {
+            case EFI_SMBIOS_TYPE_PROCESSOR_INFORMATION: {
+                SMBIOS_TABLE_TYPE4* Type4Record = (SMBIOS_TABLE_TYPE4*) Record;
+                Int2Str(Type4Record->MaxSpeed, res);
+                // AsciiStrToUnicodeStrS(GetRecordString(Record, Type4Record->MaxSpeed), res, MAX_NAME_LEN);      
+                break;
+            }
+        }
+        Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record, NULL);
+    }
+    return 0;
+}
+
+INT32 GetMaxSpeedDescription(CHAR16 *res) {
+  StrCpyS(res, MAX_DESCRIPTION_LEN, L"Maximum speed of the processor");
+  return 0;
+}
 
 PageItem biosVersion = {
     .name = L"BIOS Version",
@@ -169,22 +241,38 @@ PageItem productName = {
     .page = NULL,
 };
 
-PageItem serialNumber = {
-    .name = L"Serial Number",
-    .GetValue = GetManufacturer,
-    .GetMoreInformation = GetManufacturerDescription,
+PageItem processorVersion = {
+    .name = L"Processor Version",
+    .GetValue = GetProcessorVersion,
+    .GetMoreInformation = GetProcessorVersionDescription,
+    .page = NULL,
+};
+
+PageItem processorManufacturer = {
+    .name = L"Processor Manufacturer",
+    .GetValue = GetProcessorManufacturer,
+    .GetMoreInformation = GetProcessorManufacturerDescription,
+    .page = NULL,
+};
+
+PageItem processorMaxSpeed = {
+    .name = L"Processor Max Speed",
+    .GetValue = GetProcessorMaxSpeed,
+    .GetMoreInformation = GetMaxSpeedDescription,
     .page = NULL,
 };
 
 Page smbiosPage = {
     .name = L"System Management BIOS Page",
-    .itemCount = 4,
+    .itemCount = 7,
     .pageItems =
         {
             &biosVersion,
             &biosReleaseDate,
             &manufacturer,
             &productName,
-            //&serialNumber,
+            &processorVersion,
+            &processorManufacturer,
+            &processorMaxSpeed,
         },
 };

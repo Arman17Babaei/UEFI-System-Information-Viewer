@@ -19,6 +19,7 @@
   Pages/MainPage.c
   Pages/ProcessorPage.c
   Pages/SMBiosPage.c
+  Pages/ACPIPage.c
 
 
 [Packages]
@@ -32,3 +33,7 @@
 [Protocols]
   gEfiMpServiceProtocolGuid
   gEfiSmbiosProtocolGuid
+  gEfiShellProtocolGuid
+
+[Guids]
+  gEfiAcpi20TableGuid
