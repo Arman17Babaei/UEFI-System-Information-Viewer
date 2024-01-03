@@ -10,7 +10,7 @@
 #define CHECK_UPDATE                                                           \
   UpdateShellProtocol();                                                       \
   if (ShellProtocol == NULL) {                                                 \
-    return -1;                                                                 \
+    return;                                                                    \
   }
 
 EFI_SHELL_PROTOCOL *ShellProtocol = NULL;
@@ -28,55 +28,92 @@ VOID EFIAPI UpdateShellProtocol() {
   }
 }
 
-INT32 GetRsdpAddress(CHAR16 *res) {
-  CHECK_UPDATE
-  
-  // gST->NumberOfTableEntries
-  // EFI_ACPI_6_3_ROOT_SYSTEM_DESCRIPTION_POINTER* RSDP = NULL;
-
-  // for (UINTN i=0; i<SystemTable->NumberOfTableEntries; i++) {
-  //     if (CompareGuid(&(SystemTable->ConfigurationTable[i].VendorGuid),
-  //     &gEfiAcpi20TableGuid)) {
-  //         Print(L"RSDP table is placed at %p\n\n",
-  //         SystemTable->ConfigurationTable[i].VendorTable); RSDP =
-  //         SystemTable->ConfigurationTable[i].VendorTable;
-  //     }
-  // }
-
-  // if (!RSDP) {
-  //     Print(L"No ACPI2.0 table was found in the system\n");
-  //     return 1;
-  // }
-
-  // if (((CHAR8)((RSDP->Signature >>  0) & 0xFF) != 'R') ||
-  // ((CHAR8)((RSDP->Signature >>  8) & 0xFF) != 'S') ||
-  //     ((CHAR8)((RSDP->Signature >> 16) & 0xFF) != 'D') ||
-  //     ((CHAR8)((RSDP->Signature >> 24) & 0xFF) != ' ') ||
-  //     ((CHAR8)((RSDP->Signature >> 32) & 0xFF) != 'P') ||
-  //     ((CHAR8)((RSDP->Signature >> 40) & 0xFF) != 'T') ||
-  //     ((CHAR8)((RSDP->Signature >> 48) & 0xFF) != 'R') ||
-  //     ((CHAR8)((RSDP->Signature >> 56) & 0xFF) != ' ')) {
-
-  //     Print(L"Error! RSDP signature is not valid!\n");
-  //     return 1;
-  // }
-  // Print(L"\tRSDT table is placed at address %p\n", RSDP->RsdtAddress);
-  return 0;
-}
-
-PageItem rsdpAddress = {
-    .name = L"RSDP Table Placement",
+PageItem signature = {
+    .name = L"Signature",
+    .moreInformation = L"Signature",
     .value = NULL,
-    .moreInformation = L"The address of RSDT table in the system",
     .page = NULL,
 };
 
+PageItem revision = {
+    .name = L"Revision",
+    .moreInformation = L"Revision",
+    .value = NULL,
+    .page = NULL,
+};
+
+PageItem creatorId = {
+    .name = L"CreatorId",
+    .moreInformation = L"CreatorId",
+    .value = NULL,
+    .page = NULL,
+};
+
+PageItem creatorRevision = {
+    .name = L"CreatorRevision",
+    .moreInformation = L"CreatorRevision",
+    .value = NULL,
+    .page = NULL,
+};
+
+PageItem items = {
+    .name = L"Items",
+    .moreInformation = L"Items",
+    .value = L"...",
+    .page = NULL,
+};
+
+VOID FillAcpiPage() {
+  CHECK_UPDATE
+  EFI_ACPI_6_3_ROOT_SYSTEM_DESCRIPTION_POINTER *RSDP = NULL;
+
+  for (UINTN i = 0; i < gST->NumberOfTableEntries; i++) {
+    if (CompareGuid(&(gST->ConfigurationTable[i].VendorGuid),
+                    &gEfiAcpi20TableGuid)) {
+      Print(L"RSDP table is placed at %p\n\n",
+            gST->ConfigurationTable[i].VendorTable);
+
+      RSDP = gST->ConfigurationTable[i].VendorTable;
+      EFI_ACPI_DESCRIPTION_HEADER *XSDT =
+          (EFI_ACPI_DESCRIPTION_HEADER *)RSDP->XsdtAddress;
+
+      if (signature.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&signature.value);
+      }
+      Int2Str(XSDT->Signature, signature.value);
+
+      if (revision.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&revision.value);
+      }
+      Int2Str(XSDT->Revision, revision.value);
+
+      if (creatorId.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&creatorId.value);
+      }
+      Int2Str(XSDT->CreatorId, creatorId.value);
+
+      if (creatorRevision.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&creatorRevision.value);
+      }
+      Int2Str(XSDT->CreatorRevision, creatorRevision.value);
+    }
+  }
+}
+
 Page acpiPage = {
     .name = L"ACPI Page",
-    .itemCount = 1,
+    .itemCount = 5,
     .pageItems =
         {
-            &rsdpAddress,
-            //&serialNumber,
+            &signature,
+            &revision,
+            &creatorId,
+            &creatorRevision,
+            &items,
         },
+    .Filler = FillAcpiPage,
 };
