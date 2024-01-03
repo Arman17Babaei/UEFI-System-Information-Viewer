@@ -20,28 +20,28 @@ UINTN pageRows;
 
 VOID StartSearchFont(CHAR16 *string) {
   // set bold font and highlight background in preactions
-  string[0] = L'\x1b';
-  string[1] = L'[';
-  string[2] = L'1';
-  string[3] = L'm';
-  string[4] = L'\x1b';
-  string[5] = L'[';
-  string[6] = L'4';
-  string[7] = L'0';
-  string[8] = L'm';
+  // string[0] = L'\x1b';
+  // string[1] = L'[';
+  // string[2] = L'1';
+  // string[3] = L'm';
+  // string[4] = L'\x1b';
+  // string[5] = L'[';
+  // string[6] = L'4';
+  // string[7] = L'0';
+  // string[8] = L'm';
 }
 
 VOID ResetFont(CHAR16 *string) {
   // reset font and background in postactions
-  string[0] = L'\x1b';
-  string[1] = L'[';
-  string[2] = L'0';
-  string[3] = L'm';
-  string[4] = L'\x1b';
-  string[5] = L'[';
-  string[6] = L'4';
-  string[7] = L'9';
-  string[8] = L'm';
+  // string[0] = L'\x1b';
+  // string[1] = L'[';
+  // string[2] = L'0';
+  // string[3] = L'm';
+  // string[4] = L'\x1b';
+  // string[5] = L'[';
+  // string[6] = L'4';
+  // string[7] = L'9';
+  // string[8] = L'm';
 }
 
 VOID ClearScreen() {
@@ -99,7 +99,7 @@ VOID DrawPage(Page *page) {
   for (int i = 0; i < WIDTH; i++) {
     pageC[0][i] = L'─';
     pageC[2][i] = L'─';
-    pageC[4][i] = L'─';
+    pageC[5][i] = L'─';
     pageC[HEIGHT - 1][i] = L'─';
   }
 
@@ -110,8 +110,10 @@ VOID DrawPage(Page *page) {
   pageC[2][WIDTH - 1] = L'┤';
   pageC[3][0] = pageC[3][MAX_NAME_LEN] = L'│';
   pageC[3][2 * MAX_NAME_LEN] = pageC[3][WIDTH - 1] = L'│';
-  pageC[4][0] = L'├';
-  pageC[4][WIDTH - 1] = L'┤';
+  pageC[4][0] = pageC[4][MAX_NAME_LEN] = L'│';
+  pageC[4][2 * MAX_NAME_LEN] = pageC[4][WIDTH - 1] = L'│';
+  pageC[5][0] = L'├';
+  pageC[5][WIDTH - 1] = L'┤';
   pageC[HEIGHT - 1][0] = L'└';
   pageC[HEIGHT - 1][WIDTH - 1] = L'┘';
 
@@ -141,25 +143,25 @@ VOID DrawPage(Page *page) {
   CHAR16 s[] = L"Search: ";
   len = StrLen(s);
   for (int i = 0; i < len; i++) {
-    pageC[3][MAX_NAME_LEN * 3 + 2 + i] = s[i];
+    pageC[4][MAX_NAME_LEN * 2 + 2 + i] = s[i];
   }
   len = StrLen(searchTerm);
   for (int i = 0; i < len; i++) {
-    pageC[3][MAX_NAME_LEN * 3 + 9 + i] = searchTerm[i];
+    pageC[4][MAX_NAME_LEN * 2 + 9 + i] = searchTerm[i];
   }
   if (position.onHeader && position.headerIndex == 2) {
-    pageC[3][MAX_NAME_LEN * 3 + 1] = L'*';
+    pageC[4][MAX_NAME_LEN * 2 + 1] = L'*';
   }
 
   CHAR16 n[] = L"Name";
   len = StrLen(n);
   for (int i = 0; i < len; i++) {
-    pageC[3][MAX_NAME_LEN / 2 - len / 2 + i] = n[i];
+    pageC[4][MAX_NAME_LEN / 2 - len / 2 + i] = n[i];
   }
   CHAR16 v[] = L"Value";
   len = StrLen(v);
   for (int i = 0; i < len; i++) {
-    pageC[3][MAX_NAME_LEN + MAX_NAME_LEN / 2 - len / 2 + i] = v[i];
+    pageC[4][MAX_NAME_LEN + MAX_NAME_LEN / 2 - len / 2 + i] = v[i];
   }
 
   // Description
@@ -174,7 +176,7 @@ VOID DrawPage(Page *page) {
   }
   len = StrLen(description);
   int curX = MAX_NAME_LEN * 2 + 2;
-  int curY = 5;
+  int curY = 6;
   for (int i = 0; i < len; i++) {
     if (curX >= WIDTH - 1) {
       curX = MAX_NAME_LEN * 2 + 2;
@@ -200,7 +202,7 @@ VOID DrawPage(Page *page) {
   // Items
   CHAR16 value[MAX_NAME_LEN];
   for (int i = 0; i < pageRows; i++) {
-    int row = 5 + i;
+    int row = 6 + i;
     if (!position.onHeader && position.rowNumber == i) {
       pageC[row][0] = L'├';
       pageC[row][1] = L'*';
