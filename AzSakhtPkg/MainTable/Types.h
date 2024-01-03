@@ -12,12 +12,13 @@ typedef struct {
   CHAR16 name[MAX_NAME_LEN];
   INT32 itemCount;
   struct PageItem *pageItems[100];
+  VOID (*Filler)();
 } Page;
 
 typedef struct PageItem {
   CHAR16 name[MAX_NAME_LEN];
-  INT32 (*GetValue)(CHAR16 *);
-  INT32 (*GetMoreInformation)(CHAR16 *);
+  CHAR16 *value;
+  CHAR16 *moreInformation;
   Page *page;
 } PageItem;
 

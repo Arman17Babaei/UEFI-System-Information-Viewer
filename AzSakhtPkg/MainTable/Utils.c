@@ -5,12 +5,20 @@
 
 UINTN Int2Str(INT32 num, CHAR16 *res) {
   UINTN len = 0;
+  INT32 n = num;
   while (num > 0) {
-    res[len++] = num % 10 + '0';
+    num /= 10;
+    len ++;
+  }
+  UINTN l = len;
+  num = n;
+  res[len] = '\0';
+  while (num > 0) {
+    res[--len] = num % 10 + '0';
     num /= 10;
   }
-  res[len] = '\0';
-  return len;
+
+  return l;
 }
 
 INT32 NoneString(CHAR16 *res) {

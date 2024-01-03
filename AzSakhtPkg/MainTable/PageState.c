@@ -171,8 +171,9 @@ VOID DrawPage(Page *page) {
             L"Look around using up and down arrow keys. Press enter to select "
             L"an item. Press escape to go back.");
   } else {
-    page->pageItems[rowIndex[position.rowNumber]]->GetMoreInformation(
-        description);
+    StrnCpyS(description, MAX_DESCRIPTION_LEN,
+             page->pageItems[rowIndex[position.rowNumber]]->moreInformation,
+             MAX_DESCRIPTION_LEN);
   }
   len = StrLen(description);
   int curX = MAX_NAME_LEN * 2 + 2;
@@ -200,7 +201,7 @@ VOID DrawPage(Page *page) {
   }
 
   // Items
-  CHAR16 value[MAX_NAME_LEN];
+  CHAR16 *value;
   for (int i = 0; i < pageRows; i++) {
     int row = 6 + i;
     if (!position.onHeader && position.rowNumber == i) {
@@ -215,7 +216,10 @@ VOID DrawPage(Page *page) {
     for (int j = 0; j < len; j++) {
       pageC[row][MAX_NAME_LEN / 2 - len / 2 + j] = item->name[j];
     }
-    item->GetValue(value);
+    value = item->value;
+    if (value == NULL) {
+      value = L"";
+    }
     len = StrLen(value);
     for (int j = 0; j < len; j++) {
       pageC[row][MAX_NAME_LEN + MAX_NAME_LEN / 2 - len / 2 + j] = value[j];
@@ -237,6 +241,9 @@ VOID DrawPage(Page *page) {
 
 VOID UpdateScreen() {
   ClearScreen();
+  if (currentPage->Filler != NULL) {
+    currentPage->Filler();
+  }
   DrawPage(currentPage);
   PrintPage();
 }

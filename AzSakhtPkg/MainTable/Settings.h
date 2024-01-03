@@ -12,6 +12,6 @@
 #define MAX_NAME_LEN 31
 
 #define WIDTH 100
-#define HEIGHT 12
+#define HEIGHT 14
 
 #endif // SETTINGS_H_
