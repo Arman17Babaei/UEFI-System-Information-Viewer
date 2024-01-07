@@ -104,6 +104,13 @@ PageItem cacheSize= {
     .page = NULL,
 };
 
+PageItem coreCount = {
+    .name = L"Core count",
+    .value = NULL,
+    .moreInformation = L"Core count",
+    .page = NULL,
+};
+
 VOID FillSmbiosPage() {
   CHECK_UPDATE
 
@@ -171,6 +178,11 @@ VOID FillSmbiosPage() {
                           (VOID **)&processorMaxSpeed.value);
       }
       Int2Str(Type4Record->MaxSpeed, processorMaxSpeed.value);
+      if (coreCount.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&coreCount.value);
+      }
+      Int2Str(Type4Record->CoreCount, coreCount.value);
       break;
     }
     case EFI_SMBIOS_TYPE_CACHE_INFORMATION: {
@@ -200,7 +212,7 @@ VOID FillSmbiosPage() {
 
 Page smbiosPage = {
     .name = L"System Management BIOS Page",
-    .itemCount = 8,
+    .itemCount = 9,
     .pageItems =
         {
             &biosVersion,
@@ -209,6 +221,7 @@ Page smbiosPage = {
             &processorVersion,
             &processorManufacturer,
             &processorMaxSpeed,
+            &coreCount,
             &memorySize,
             &cacheSize,
 
