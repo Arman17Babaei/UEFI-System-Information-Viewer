@@ -97,10 +97,10 @@ PageItem memorySize = {
     .page = NULL,
 };
 
-PageItem cacheL1Size= {
-    .name = L"L1 cache size",
+PageItem cacheSize= {
+    .name = L"Cache size",
     .value = NULL,
-    .moreInformation = L"Installed size of L1 cache",
+    .moreInformation = L"Installed size of cache",
     .page = NULL,
 };
 
@@ -114,6 +114,7 @@ VOID FillSmbiosPage() {
   Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record,
                                    NULL);
   while (!EFI_ERROR(Status)) {
+    // Print(L"SMBIOS Type %d \n", Record->Type);
     switch (Record->Type) {
     case EFI_SMBIOS_TYPE_BIOS_INFORMATION: {
       SMBIOS_TABLE_TYPE0 *Type0Record = (SMBIOS_TABLE_TYPE0 *)Record;
@@ -174,12 +175,12 @@ VOID FillSmbiosPage() {
     }
     case EFI_SMBIOS_TYPE_CACHE_INFORMATION: {
       SMBIOS_TABLE_TYPE7 *Type7Record = (SMBIOS_TABLE_TYPE7 *)Record;
-      if (cacheL1Size.value == NULL) {
+      if (cacheSize.value == NULL) {
         gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
-                          (VOID **)&cacheL1Size.value);
+                          (VOID **)&cacheSize.value);
       }
-       Print(L"\nInstalledSize=%d\n", Type7Record->InstalledSize);
-      Int2Str(Type7Record->SystemCacheType, cacheL1Size.value);
+      // Print(L"\nInstalledSize=%d\n", Type7Record->InstalledSize);
+      Int2Str(Type7Record->InstalledSize, cacheSize.value);
       break;
     }
     case EFI_SMBIOS_TYPE_MEMORY_DEVICE: {
@@ -199,7 +200,7 @@ VOID FillSmbiosPage() {
 
 Page smbiosPage = {
     .name = L"System Management BIOS Page",
-    .itemCount = 7,
+    .itemCount = 8,
     .pageItems =
         {
             &biosVersion,
@@ -209,7 +210,7 @@ Page smbiosPage = {
             &processorManufacturer,
             &processorMaxSpeed,
             &memorySize,
-            //&cacheL1Size,
+            &cacheSize,
 
         },
     .Filler = FillSmbiosPage,
