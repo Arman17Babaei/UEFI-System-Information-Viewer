@@ -90,6 +90,20 @@ PageItem processorMaxSpeed = {
     .page = NULL,
 };
 
+PageItem memorySize = {
+    .name = L"Memory size MB",
+    .value = NULL,
+    .moreInformation = L"Size of the memory",
+    .page = NULL,
+};
+
+PageItem cacheL1Size= {
+    .name = L"L1 cache size",
+    .value = NULL,
+    .moreInformation = L"Installed size of L1 cache",
+    .page = NULL,
+};
+
 VOID FillSmbiosPage() {
   CHECK_UPDATE
 
@@ -126,13 +140,13 @@ VOID FillSmbiosPage() {
       }
       AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->Manufacturer),
                             manufacturer.value, MAX_NAME_LEN);
-      productName.value = L"...";
-      if (productName.moreInformation == NULL) {
-        gBS->AllocatePool(EfiLoaderData, MAX_DESCRIPTION_LEN * sizeof(CHAR16),
-                          (VOID **)&productName.moreInformation);
-      }
-      AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->ProductName),
-                            productName.moreInformation, MAX_DESCRIPTION_LEN);
+      // productName.value = L"...";
+      // if (productName.moreInformation == NULL) {
+      //   gBS->AllocatePool(EfiLoaderData, MAX_DESCRIPTION_LEN * sizeof(CHAR16),
+      //                     (VOID **)&productName.moreInformation);
+      // }
+      // AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->ProductName),
+      //                       productName.moreInformation, MAX_DESCRIPTION_LEN);
       break;
     }
     case EFI_SMBIOS_TYPE_PROCESSOR_INFORMATION: {
@@ -158,6 +172,25 @@ VOID FillSmbiosPage() {
       Int2Str(Type4Record->MaxSpeed, processorMaxSpeed.value);
       break;
     }
+    case EFI_SMBIOS_TYPE_CACHE_INFORMATION: {
+      SMBIOS_TABLE_TYPE7 *Type7Record = (SMBIOS_TABLE_TYPE7 *)Record;
+      if (cacheL1Size.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&cacheL1Size.value);
+      }
+       Print(L"\nInstalledSize=%d\n", Type7Record->InstalledSize);
+      Int2Str(Type7Record->SystemCacheType, cacheL1Size.value);
+      break;
+    }
+    case EFI_SMBIOS_TYPE_MEMORY_DEVICE: {
+      SMBIOS_TABLE_TYPE17 *Type17Record = (SMBIOS_TABLE_TYPE17 *)Record;
+      if (memorySize.value == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
+                          (VOID **)&memorySize.value);
+      }
+      Int2Str(Type17Record->Size, memorySize.value);
+      break;
+    }
     }
     Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL,
                                      &Record, NULL);
@@ -172,10 +205,12 @@ Page smbiosPage = {
             &biosVersion,
             &biosReleaseDate,
             &manufacturer,
-            &productName,
             &processorVersion,
             &processorManufacturer,
             &processorMaxSpeed,
+            &memorySize,
+            //&cacheL1Size,
+
         },
     .Filler = FillSmbiosPage,
 };
