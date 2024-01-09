@@ -122,7 +122,9 @@ You can observe our program performance on an actual system below:
 
 3- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/c9a07dfe-7e2f-4101-bfc0-4ead2a569520" width="500">
 
-4- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/dc85ade5-a4f5-4e91-ac5b-d985cbf0c706" width="500">
+4- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/f89e923d-9cae-411e-8039-b73eb750597f" width="500">
 
-5- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/f89e923d-9cae-411e-8039-b73eb750597f" width="500">
+5- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/dc85ade5-a4f5-4e91-ac5b-d985cbf0c706" width="500">
+
+
 
