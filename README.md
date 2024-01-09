@@ -62,6 +62,11 @@ Week 5 and 6:
 - Incorporating word highlighting when searching.
   
 ## Sample
+"Main" page:
+
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/7ad488db-a55e-4066-a6fd-6c58a802886a" width="500">
+
+
 "Bios" page:
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/77ab4a48-68ff-4438-96aa-8c9a0b4fff8b" width="500">
