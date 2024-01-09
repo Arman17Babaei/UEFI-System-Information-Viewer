@@ -71,6 +71,9 @@ Week 5 and 6:
 - Implementing search and filter functionality.
 - Incorporating word highlighting when searching.
   
+An example demonstrating the utilization of these features is presented below:
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/f132ee88-5238-48cd-94ab-5cd74279f7ae" width="500">
+
 ## Pages
 In this section, a concise overview of each page is provided. Every page is equipped with both search and filter functionalities.
 ### "Main" Page:
