@@ -63,16 +63,13 @@ Week 5 and 6:
   
 ## Sample
 "Bios" page:
-
-<img src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/77ab4a48-68ff-4438-96aa-8c9a0b4fff8b" width="248">
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/77ab4a48-68ff-4438-96aa-8c9a0b4fff8b" width="448">
 
 "Processor count" page:
-
-<img src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/635363b8-04c9-4a2c-b5c9-5585ad105556" width="248">
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/635363b8-04c9-4a2c-b5c9-5585ad105556" width="448">
 
 "ACPI" page:
-
-<img src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/85f1d957-f6ad-4536-b7e7-ace248f38881" width="248">
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/85f1d957-f6ad-4536-b7e7-ace248f38881" width="448">
 
 ## Execution
 - Edit `setup_env.sh` to match your system and run `. ./setup_env.sh`.
