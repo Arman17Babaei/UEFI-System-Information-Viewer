@@ -60,7 +60,17 @@ Week 5 and 6:
 - Navigating between page items vertically and horizontally.
 - Implementing search and filter functionality.
 - Incorporating word highlighting when searching.
+  
 ## Sample
+"Bios" page:
+![photo_5830357227909791617_y](https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/77ab4a48-68ff-4438-96aa-8c9a0b4fff8b)
+
+"Processor count" page:
+![image](https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/635363b8-04c9-4a2c-b5c9-5585ad105556)
+
+"ACPI" page:
+![image](https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/85f1d957-f6ad-4536-b7e7-ace248f38881)
+
 ## Execution
 - Edit `setup_env.sh` to match your system and run `. ./setup_env.sh`.
 - Use `make run` to build the package and start qemu. Then enter the following commands to run the program:
