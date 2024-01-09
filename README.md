@@ -1,11 +1,20 @@
 # UEFI System Information Viewer
 In this project, we developed a UEFI application designed to present an interactive display of system information. Leveraging UEFI services and protocols, our program retrieves and showcases comprehensive hardware and firmware details, empowering users to seamlessly inspect and interact with key system information.
+## Execution
+- Edit `setup_env.sh` to match your system and run `. ./setup_env.sh`.
+- Use `make run` to build the package and start qemu. Then enter the following commands to run the program:
+```
+Shell> FS0:
+Shell> MainTable.efi
+```
+- Press `Ctrl-A X` to terminate.
+
 ## Table of contents
 * [Introduction](#Introduction)
 * [Week-by-Week Milestones](#Week-by-Week-Milestones)
 * [Features](#Features)
 * [Sample](#Sample)
-* [Execution](#Execution)
+  
 ## Introduction
 UEFI stands for "Unified Extensible Firmware Interface." It is a standard interface specification that defines a software interface between the operating system and the system firmware (BIOS or UEFI firmware) during the boot process and the runtime of an operating system. UEFI is designed to replace the traditional BIOS (Basic Input/Output System) and offers several advantages, including support for larger hard drives, faster boot times, and improved security features.
 
@@ -62,31 +71,24 @@ Week 5 and 6:
 - Incorporating word highlighting when searching.
   
 ## Sample
-"Main" page:
+In this section, a concise overview of each page is provided. Every page is equipped with both search and filter functionalities.
+### "Main" Page:
+This serves as the primary and initial page that users encounter. They can select from options including "Processor Count," "SMBIOS Table Data," "ACPI Table," and "Network Table." The user's choice determines the subsequent content displayed on the page.
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/7ad488db-a55e-4066-a6fd-6c58a802886a" width="500">
 
-
-"Bios" page:
-
-<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/77ab4a48-68ff-4438-96aa-8c9a0b4fff8b" width="500">
-
-
-"Processor count" page:
-
+### "Processor count" page:
+On this page, users can observe both the total number of processors and the count of enabled processors.
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/635363b8-04c9-4a2c-b5c9-5585ad105556" width="500">
+
+
+### "System Management Bios" page:
+On this page, you will discover comprehensive details about the system's BIOS, including information such as "BIOS Version," "BIOS Release Date," "Manufacturer," "Processor Version," "Processor Manufacturer," "Processor Max Speed," "Number of Cores," "Memory Size in MB," and "Cache Size."
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/c40b80af-f0b4-4707-a050-7da649d1e1d0" width="500">
 
 
 "ACPI" page:
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/85f1d957-f6ad-4536-b7e7-ace248f38881" width="500">
 
-
-## Execution
-- Edit `setup_env.sh` to match your system and run `. ./setup_env.sh`.
-- Use `make run` to build the package and start qemu. Then enter the following commands to run the program:
-```
-Shell> FS0:
-Shell> MainTable.efi
-```
-- Press `Ctrl-A X` to terminate.
+"Subtle Items" page:
