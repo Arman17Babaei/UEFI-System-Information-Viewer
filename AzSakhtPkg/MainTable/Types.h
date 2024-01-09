@@ -9,14 +9,14 @@
 struct PageItem;
 
 typedef struct {
-  CHAR16 name[MAX_NAME_LEN];
+  CHAR16* name;
   INT32 itemCount;
   struct PageItem *pageItems[100];
   VOID (*Filler)();
 } Page;
 
 typedef struct PageItem {
-  CHAR16 name[MAX_NAME_LEN];
+  CHAR16 *name;
   CHAR16 *value;
   CHAR16 *moreInformation;
   Page *page;

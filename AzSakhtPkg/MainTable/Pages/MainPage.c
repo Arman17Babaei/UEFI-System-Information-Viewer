@@ -22,13 +22,21 @@ PageItem acpiTable = {
     .page = &acpiPage,
 };
 
+PageItem networkTable = {
+    .name = L"Network Table",
+    .value = L"",
+    .moreInformation = L"Network Information",
+    .page = &networkPage,
+};
+
 Page mainPage = {
     .name = L"Main Page",
-    .itemCount = 3,
+    .itemCount = 4,
     .pageItems =
         {
             &processrsCount,
             &smbiosTable,
             &acpiTable,
+            &networkTable,
         },
 };

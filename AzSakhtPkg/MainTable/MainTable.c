@@ -23,11 +23,11 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle,
   EFI_INPUT_KEY Key;
 
   while (1) {
+    SystemTable->BootServices->WaitForEvent(1, &SystemTable->ConIn->WaitForKey, NULL);
     SystemTable->ConIn->ReadKeyStroke(SystemTable->ConIn, &Key);
     if (Key.ScanCode + Key.UnicodeChar) {
       HandleKeyStroke(Key);
       UpdateScreen();
-      Print(L"Scan code: %d, UnicodeChar: %d\n", Key.ScanCode, Key.UnicodeChar);
     }
   }
 

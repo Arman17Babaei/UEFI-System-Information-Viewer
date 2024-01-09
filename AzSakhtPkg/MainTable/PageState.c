@@ -18,30 +18,18 @@ CHAR16 pageStr[HEIGHT * (WIDTH) * (1 + MAX_ACTION_LEN * 2)];
 UINTN rowIndex[HEIGHT];
 UINTN pageRows;
 
-VOID StartSearchFont(CHAR16 *string) {
-  // set bold font and highlight background in preactions
-  // string[0] = L'\x1b';
-  // string[1] = L'[';
-  // string[2] = L'1';
-  // string[3] = L'm';
-  // string[4] = L'\x1b';
-  // string[5] = L'[';
-  // string[6] = L'4';
-  // string[7] = L'0';
-  // string[8] = L'm';
-}
+#define DEFAULT_COLOR EFI_BLACK | EFI_BACKGROUND_LIGHTGRAY
+#define SELECTED_COLOR EFI_LIGHTGRAY | EFI_BACKGROUND_BLACK
 
-VOID ResetFont(CHAR16 *string) {
-  // reset font and background in postactions
-  // string[0] = L'\x1b';
-  // string[1] = L'[';
-  // string[2] = L'0';
-  // string[3] = L'm';
-  // string[4] = L'\x1b';
-  // string[5] = L'[';
-  // string[6] = L'4';
-  // string[7] = L'9';
-  // string[8] = L'm';
+VOID SearchHighlight(UINT32 r, UINT32 c, UINT32 l) {
+  CHAR16 ECHAR = pageC[r][c + l];
+  pageC[r][c + l] = L'\0';
+  gST->ConOut->SetAttribute(gST->ConOut, SELECTED_COLOR);
+  gST->ConOut->SetCursorPosition(gST->ConOut, c, r);
+  gST->ConOut->OutputString(gST->ConOut, &pageC[r][c]);
+  gST->ConOut->SetAttribute(gST->ConOut, DEFAULT_COLOR);
+  gST->ConOut->SetCursorPosition(gST->ConOut, 0, HEIGHT - 1);
+  pageC[r][c + l] = ECHAR;
 }
 
 VOID ClearScreen() {
@@ -77,16 +65,13 @@ VOID PrintPage() {
         }
       }
     }
-    pageStr[pos++] = L'\n';
   }
   pageStr[pos] = L'\0';
-
+  gST->ConOut->SetAttribute(gST->ConOut, DEFAULT_COLOR);
   gST->ConOut->OutputString(gST->ConOut, pageStr);
 }
 
 VOID DrawPage(Page *page) {
-  ResetFont(preActions[0][0]);
-
   // Frame
   for (UINTN i = 0; i < HEIGHT; i++) {
     pageC[i][0] = L'│';
@@ -224,16 +209,22 @@ VOID DrawPage(Page *page) {
     for (int j = 0; j < len; j++) {
       pageC[row][MAX_NAME_LEN + MAX_NAME_LEN / 2 - len / 2 + j] = value[j];
     }
+  }
+}
+
+VOID AddHighlights(Page *page) {
+  for (int i = 0; i < pageRows; i++) {
+    int row = 6 + i;
+    PageItem *item = page->pageItems[rowIndex[i]];
 
     // Highlight search
     if (StrLen(searchTerm) != 0) {
       INT32 match = MatchIndex(item->name, searchTerm);
       if (match != -1) {
-        len = StrLen(item->name);
+        UINT32 len = StrLen(item->name);
         INT32 matchColumn = MAX_NAME_LEN / 2 - len / 2 + match;
 
-        StartSearchFont(preActions[row][matchColumn]);
-        ResetFont(postActions[row][matchColumn + StrLen(searchTerm) - 1]);
+        SearchHighlight(row, matchColumn, StrLen(searchTerm));
       }
     }
   }
@@ -246,6 +237,7 @@ VOID UpdateScreen() {
   }
   DrawPage(currentPage);
   PrintPage();
+  AddHighlights(currentPage);
 }
 
 VOID HandleKeyStroke(EFI_INPUT_KEY key) {

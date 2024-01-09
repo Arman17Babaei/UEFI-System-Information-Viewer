@@ -20,6 +20,7 @@
   Pages/ProcessorPage.c
   Pages/SMBiosPage.c
   Pages/ACPIPage.c
+  Pages/NetworkPage.c
 
 
 [Packages]
@@ -34,6 +35,7 @@
   gEfiMpServiceProtocolGuid
   gEfiSmbiosProtocolGuid
   gEfiShellProtocolGuid
+  gEfiSimpleNetworkProtocolGuid
 
 [Guids]
   gEfiAcpi20TableGuid

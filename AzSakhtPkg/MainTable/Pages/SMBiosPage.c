@@ -1,6 +1,7 @@
 #include "../Pages.h"
 #include "../Utils.h"
 #include <IndustryStandard/SmBios.h>
+#include <Library/BaseMemoryLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
 #include <Protocol/MmMp.h>
@@ -65,14 +66,14 @@ PageItem manufacturer = {
 PageItem productName = {
     .name = L"Product Name",
     .value = NULL,
-    .moreInformation = L"Product Name",
+    .moreInformation = NULL,
     .page = NULL,
 };
 
 PageItem processorVersion = {
     .name = L"Processor Version",
     .value = NULL,
-    .moreInformation = L"Version of Processor",
+    .moreInformation = NULL,
     .page = NULL,
 };
 
@@ -97,7 +98,7 @@ PageItem memorySize = {
     .page = NULL,
 };
 
-PageItem cacheSize= {
+PageItem cacheSize = {
     .name = L"Cache size",
     .value = NULL,
     .moreInformation = L"Installed size of cache",
@@ -121,7 +122,6 @@ VOID FillSmbiosPage() {
   Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, NULL, &Record,
                                    NULL);
   while (!EFI_ERROR(Status)) {
-    // Print(L"SMBIOS Type %d \n", Record->Type);
     switch (Record->Type) {
     case EFI_SMBIOS_TYPE_BIOS_INFORMATION: {
       SMBIOS_TABLE_TYPE0 *Type0Record = (SMBIOS_TABLE_TYPE0 *)Record;
@@ -148,24 +148,26 @@ VOID FillSmbiosPage() {
       }
       AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->Manufacturer),
                             manufacturer.value, MAX_NAME_LEN);
-      // productName.value = L"...";
-      // if (productName.moreInformation == NULL) {
-      //   gBS->AllocatePool(EfiLoaderData, MAX_DESCRIPTION_LEN * sizeof(CHAR16),
-      //                     (VOID **)&productName.moreInformation);
-      // }
-      // AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->ProductName),
-      //                       productName.moreInformation, MAX_DESCRIPTION_LEN);
+      productName.value = L"...";
+      if (productName.moreInformation == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_DESCRIPTION_LEN * sizeof(CHAR16),
+                          (VOID **)&productName.moreInformation);
+      }
+      AsciiStrToUnicodeStrS(GetRecordString(Record, Type1Record->ProductName),
+                            productName.moreInformation, MAX_DESCRIPTION_LEN);
       break;
     }
     case EFI_SMBIOS_TYPE_PROCESSOR_INFORMATION: {
       SMBIOS_TABLE_TYPE4 *Type4Record = (SMBIOS_TABLE_TYPE4 *)Record;
-      if (processorVersion.value == NULL) {
-        gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
-                          (VOID **)&processorVersion.value);
+      processorVersion.value = L"...";
+      if (processorVersion.moreInformation == NULL) {
+        gBS->AllocatePool(EfiLoaderData, MAX_DESCRIPTION_LEN * sizeof(CHAR16),
+                          (VOID **)&processorVersion.moreInformation);
+        SetMem(processorVersion.moreInformation, MAX_DESCRIPTION_LEN * sizeof(CHAR16), 0);
       }
       AsciiStrToUnicodeStrS(
           GetRecordString(Record, Type4Record->ProcessorVersion),
-          processorVersion.value, MAX_NAME_LEN);
+          processorVersion.moreInformation, MAX_DESCRIPTION_LEN);
       if (processorManufacturer.value == NULL) {
         gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
                           (VOID **)&processorManufacturer.value);
@@ -191,7 +193,6 @@ VOID FillSmbiosPage() {
         gBS->AllocatePool(EfiLoaderData, MAX_NAME_LEN * sizeof(CHAR16),
                           (VOID **)&cacheSize.value);
       }
-      // Print(L"\nInstalledSize=%d\n", Type7Record->InstalledSize);
       Int2Str(Type7Record->InstalledSize, cacheSize.value);
       break;
     }
@@ -212,19 +213,19 @@ VOID FillSmbiosPage() {
 
 Page smbiosPage = {
     .name = L"System Management BIOS Page",
-    .itemCount = 9,
+    .itemCount = 10,
     .pageItems =
         {
             &biosVersion,
             &biosReleaseDate,
             &manufacturer,
+            &productName,
             &processorVersion,
             &processorManufacturer,
             &processorMaxSpeed,
             &coreCount,
             &memorySize,
             &cacheSize,
-
         },
     .Filler = FillSmbiosPage,
 };

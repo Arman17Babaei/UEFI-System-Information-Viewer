@@ -42,6 +42,14 @@ INT32 MatchIndex(const CHAR16 *name, const CHAR16 *lookupTerm) {
 
 VOID UpdateTerm(EFI_INPUT_KEY key, CHAR16 *term) {
   if (key.UnicodeChar != 0) {
+    if (key.UnicodeChar == CHAR_BACKSPACE) {
+      if (StrLen(term) == 0) {
+        return;
+      }
+      term[StrLen(term) - 1] = L'\0';
+      return;
+    }
+
     if (StrLen(term) >= MAX_NAME_LEN - 1) {
       return;
     }

@@ -11,5 +11,6 @@ extern Page mainPage;
 extern Page processorPage;
 extern Page smbiosPage;
 extern Page acpiPage;
+extern Page networkPage;
 
 #endif // PAGES_H_
