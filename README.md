@@ -37,19 +37,24 @@ The implementation of this project consists of two main components:
 Week 1: 
 - Install and run Edk2
 - Build a "Hello World" package.
+  
 Week 2:
 - Familiarization with available hardware and system firmware information
 - Understanding information display protocols in UEFI.
+  
 Week 3:
 - Understanding the functions of receiving information and proficiently working with them
 - Navigating through the page efficiently
+  
 Week 4: 
 - Presenting specific information
 - Transitioning the base between different pages.
+  
 Week 5 and 6: 
 - Verifying the remaining steps for project completion.
 - Conducting a more detailed planning and time allocation for each task.
 - Understanding functions related to text and display to present information in an organized and aesthetically pleasing manner.
+  
 ## Features
 - Navigating between page items vertically and horizontally.
 - Implementing search and filter functionality.
