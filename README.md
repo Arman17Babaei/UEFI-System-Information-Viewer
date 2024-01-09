@@ -65,13 +65,13 @@ Week 5 and 6:
 "Bios" page:
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/77ab4a48-68ff-4438-96aa-8c9a0b4fff8b" width="500">
-
-
+<br />
+<br />
 "Processor count" page:
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/635363b8-04c9-4a2c-b5c9-5585ad105556" width="500">
-
-
+<br />
+<br />
 "ACPI" page:
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/85f1d957-f6ad-4536-b7e7-ace248f38881" width="500">
