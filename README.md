@@ -36,11 +36,11 @@ ACPI is an industry-standard that defines power management and configuration int
 UEFI variables are a mechanism provided by the UEFI firmware to store and retrieve configuration data. These variables are used by both the firmware and UEFI applications to store persistent information, such as boot configuration settings, system language preferences, and other runtime data. UEFI applications can access these variables to retrieve and modify system-specific settings.
 
 The implementation of this project consists of two main components:
-### Display and Navigation Features:
+#### Display and Navigation Features:
 - Implementing methods to display information.
 - Implementing navigation, search, and filtering functionalities.
   
-### Getting the System Information:
+#### Getting the System Information:
 - Utilizing UEFI functions and protocols to acquire essential system data.
 - Retrieving key system information, including the system table, SMBIOS table, ACPI tables, and UEFI variables.
 
