@@ -117,6 +117,23 @@ The exact ACPI tables present can vary depending on the system and firmware impl
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/ec4d23e9-99eb-44b3-ab86-a03729626e13" width="500">
 
+### "Network" page:
+On this page, you can select any desired network interface, and upon selection, you will be redirected to another page displaying specific details about the chosen interface.
+
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/0658c3b1-aec1-4081-96af-668fbefd247a" width="500">
+
+#### "Network Interface" page:
+On this page, you will find in-depth details regarding your chosen network interface. The information presented includes:
+
+- "State": current operational status of the network interface.
+- "Hardware Address": a unique identifier assigned to the network interface. It is a combination of letters and numbers assigned to network interfaces for communication on the physical network.
+- "Media state": link status or connection status of the network interface.
+- "Interface type": the technology or protocol used by the network interface for communication.
+
+
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/88ac8337-42f8-48b7-81d2-fad9d918dc36" width="500">
+
+
 ## Sample
 You can observe our program performance on an actual system below:
 
