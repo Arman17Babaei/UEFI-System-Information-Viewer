@@ -11,7 +11,8 @@ UEFI stands for "Unified Extensible Firmware Interface." It is a standard interf
 
 UEFI programming refers to the development of software applications, known as UEFI applications, that run on systems with UEFI firmware. UEFI applications can perform various tasks, such as configuring hardware settings, interacting with the system firmware, and providing pre-boot utilities. UEFI programming often involves using languages such as C or C++ and making use of UEFI services and protocols to interact with the underlying firmware. UEFI programming is essential for creating applications that leverage the capabilities of modern UEFI firmware, providing a more flexible and extensible environment for system initialization and management compared to the traditional BIOS. This is particularly important in the context of modern computing systems, including PCs and servers.
 
-### Important Definitions:
+Some of the Important components of system information are:
+
 - System Table:
 The system table, often referred to as the EFI System Table, is a data structure provided by the UEFI firmware. It contains information about various services and protocols available in the UEFI environment. UEFI applications can access this table to interact with firmware services and obtain critical information about the system.
 
@@ -28,7 +29,7 @@ The implementation of this project consists of two main components:
 ### Display and Navigation Features:
 - Implementing methods to display information.
 - Implementing navigation, search, and filtering functionalities.
-- 
+  
 ### Getting the System Information:
 - Utilizing UEFI functions and protocols to acquire essential system data.
 - Retrieving key system information, including the system table, SMBIOS table, ACPI tables, and UEFI variables.
