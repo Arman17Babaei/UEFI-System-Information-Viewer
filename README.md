@@ -13,6 +13,7 @@ Shell> MainTable.efi
 * [Introduction](#Introduction)
 * [Week-by-Week Milestones](#Week-by-Week-Milestones)
 * [Features](#Features)
+* [Pages](#Pages)
 * [Sample](#Sample)
   
 ## Introduction
@@ -70,7 +71,7 @@ Week 5 and 6:
 - Implementing search and filter functionality.
 - Incorporating word highlighting when searching.
   
-## Sample
+## Pages
 In this section, a concise overview of each page is provided. Every page is equipped with both search and filter functionalities.
 ### "Main" Page:
 This serves as the primary and initial page that users encounter. They can select from options including "Processor Count," "SMBIOS Table Data," "ACPI Table," and "Network Table." The user's choice determines the subsequent content displayed on the page.
@@ -79,16 +80,49 @@ This serves as the primary and initial page that users encounter. They can selec
 
 ### "Processor count" page:
 On this page, users can observe both the total number of processors and the count of enabled processors.
+
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/635363b8-04c9-4a2c-b5c9-5585ad105556" width="500">
 
 
 ### "System Management Bios" page:
 On this page, you will discover comprehensive details about the system's BIOS, including information such as "BIOS Version," "BIOS Release Date," "Manufacturer," "Processor Version," "Processor Manufacturer," "Processor Max Speed," "Number of Cores," "Memory Size in MB," and "Cache Size."
+
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/c40b80af-f0b4-4707-a050-7da649d1e1d0" width="500">
 
 
-"ACPI" page:
+### "ACPI" page:
+The ACPI (Advanced Configuration and Power Interface) tables embedded in the UEFI (Unified Extensible Firmware Interface) firmware furnish details regarding the system's configuration and power management. On this page, you can view the signature, OEM ID, and details of the ACPI table. Clicking on "items" will navigate you to another page titled "Subtle Items."
 
 <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/85f1d957-f6ad-4536-b7e7-ace248f38881" width="500">
 
-"Subtle Items" page:
+#### "Subtle Items" page:
+The exact ACPI tables present can vary depending on the system and firmware implementation, but commonly encountered tables include:
+
+- RSDP (Root System Description Pointer): Contains information about the location and structure of other ACPI tables.
+- RSDT (Root System Description Table): Lists the 32-bit physical addresses of other ACPI tables.
+- XSDT (Extended System Description Table): Similar to RSDT but supports 64-bit physical addresses.
+- FACP (Fixed ACPI Description Table): Provides information about system power management and configuration.
+- DSDT (Differentiated System Description Table): Contains the main ACPI description for the system, providing details about devices, power management, and more.
+- SSDT (Secondary System Description Table): Supplemental tables that provide additional information and can be loaded dynamically.
+- APIC (Multiple APIC Description Table): Describes the system's interrupt controllers.
+- HPET (High Precision Event Timer): Provides information about the system's timer capabilities.
+- SBST (Smart Battery Specification Table): Presents information about the system's smart battery if applicable.
+- BGRT (Boot Graphics Resource Table): Contains information about the system's logo or boot graphics.
+- SLIT (System Locality Information Table): Describes the relative distances between processors in a multi-processor system.
+
+
+<img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/ec4d23e9-99eb-44b3-ab86-a03729626e13" width="500">
+
+## Sample
+You can observe our program performance on an actual system below:
+
+1- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/39429486-df8f-4a35-a5b7-1c7a05629f07" width="500">
+
+2- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/d1108ee7-1fd3-4279-9f10-1714ee059b85" width="500">
+
+3- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/c9a07dfe-7e2f-4101-bfc0-4ead2a569520" width="500">
+
+4- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/dc85ade5-a4f5-4e91-ac5b-d985cbf0c706" width="500">
+
+5- <img align="center" src="https://github.com/Arman17Babaei/UEFI-System-Information-Viewer/assets/59363733/f89e923d-9cae-411e-8039-b73eb750597f" width="500">
+
